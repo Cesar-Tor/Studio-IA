@@ -349,16 +349,19 @@ function setApiStatus(msg, t) {
 
 // Prompt optimizado para flux-kontext
 function buildPrompt(instruction, style, variant) {
-  // flux-kontext interpreta mejor prompts directos y descriptivos
-  const base = `Keep the exact same handbag/product from the input image — preserve every detail: shape, color, pattern, hardware, logo, stitching, texture. Do not change anything about the product itself.`;
+  // La instrucción del usuario va PRIMERO — flux-kontext le da más peso al inicio del prompt
+  const preserve = `Keep the handbag/product exactly as it appears in the input image — same shape, colors, pattern, hardware, logo, stitching, texture. Only change what the user asks.`;
 
   const scenes = {
     main: instruction,
-    v1: `Editorial creative version — ${instruction} — with artistic depth of field and sophisticated atmosphere`,
-    v2: `Luxury aspirational version — ${instruction} — premium brand campaign aesthetic, cinematic lighting`
+    v1: `${instruction}, with artistic editorial lighting and sophisticated depth of field`,
+    v2: `${instruction}, luxury brand campaign aesthetic, cinematic premium lighting`
   };
 
-  return `${base} Task: ${scenes[variant] || scenes.main}. Style: ${style}. Photorealistic, 4K sharp, professional commercial photography.`;
+  const userTask = scenes[variant] || scenes.main;
+
+  // Orden: tarea del usuario → preservación → estilo → calidad
+  return `${userTask}. ${preserve} ${style}. Photorealistic, 4K sharp, professional photography.`;
 }
 
 async function callKontext(apiKey, prompt) {
