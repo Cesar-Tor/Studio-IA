@@ -372,7 +372,7 @@ function closeModalOutside(e) { if (e.target === document.getElementById('modalB
 function saveKey() {
   const k = document.getElementById('apiInput').value.trim();
   if (!k) { showStatus('Pega tu API key primero', 'err'); return; }
-  if (!k.startsWith('fal-') && !k.startsWith('key-')) {
+  if (false) {
     showStatus('La key debe empezar con fal- o key-', 'err'); return;
   }
   localStorage.setItem(API_KEY_STORE, k);
